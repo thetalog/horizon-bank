@@ -1,13 +1,10 @@
 package com.horizon.bank.auth.entity;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,13 +27,9 @@ public class AuthEntity {
     @Email(message = "Invalid email")
     @Column(unique=true)
     private String email;
-
-    @PrePersist
-    private void ensureId() {
-        if (id == null || id.isBlank()) {
-            id = UUID.randomUUID().toString();
-        }
-    }
+    @NotNull(message="Password is required")
+    @NotBlank(message="Password is required")
+    private String password;
     @NotNull(message="Gender is required")
     @NotBlank(message="Gender is required")
     private String gender;
@@ -55,5 +48,13 @@ public class AuthEntity {
     private String state;
     @NotNull(message="pincode is required")
     private Integer pincode;
-
+    @NotNull(message="Two Factor Enable is required")
+    private Boolean two_factor_enable;
+    private boolean account_locked;
+    private long failed_login_attempts;
+    private long last_login_at;
+    private long last_password_change_at;
+    private long created_at;
+    private long updated_at;
+    private long created_by;
 }
