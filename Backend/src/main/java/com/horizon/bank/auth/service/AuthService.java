@@ -1,28 +1,49 @@
 package com.horizon.bank.auth.service;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
-import com.horizon.bank.auth.entity.AuthEntity;
-import com.horizon.bank.auth.repository.AuthRepository;
+import com.horizon.bank.auth.dto.CreateUserRequestDto;
+import com.horizon.bank.auth.entity.User;
+import com.horizon.bank.auth.repository.UserRepository;
 
 @Service
 public class AuthService {
 
-    private final AuthRepository repository;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
 
-    public AuthService(AuthRepository repository){
-        this.repository = repository;
+    public AuthService(UserRepository userRepository, JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
-    public AuthEntity save(AuthEntity entity){
-        return repository.save(entity);
-    }
-
-    public AuthEntity delete(String id){
-        AuthEntity entity = repository.findById(id).orElse(null);
-        if (entity != null) {
-            repository.delete(entity);
+    public User createUser(CreateUserRequestDto user) {
+        User existingUser = userRepository.findByEmail(user.getEmail());
+        if (existingUser != null) {
+            throw new RuntimeException("User with this email already exists");
         }
-        return entity;
+        User newUser = new User();
+        newUser.setId(UUID.randomUUID().toString());
+        newUser.setName(user.getName());
+        newUser.setEmail(user.getEmail());  
+        newUser.setPassword(user.getPassword());
+        newUser.setGender(user.getGender());
+        newUser.setPhone_number(user.getPhone_number());
+        newUser.setAddress_line(user.getAddress_line());
+        newUser.setCity(user.getCity());
+        newUser.setState(user.getState());
+        newUser.setPincode(user.getPincode());
+        return userRepository.save(newUser);
+    }
+
+    public String login(String email, String password) {
+        User user = userRepository.findByEmail(email);
+        if (user == null || !user.getPassword().equals(password)) {
+            throw new RuntimeException("Invalid email or password");
+        }
+        return jwtService.generateToken(email);
+        
     }
 }

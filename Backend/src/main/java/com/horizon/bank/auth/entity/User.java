@@ -1,5 +1,8 @@
 package com.horizon.bank.auth.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import jakarta.persistence.Column;
@@ -15,8 +18,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="Auth")
-public class AuthEntity {
+@Table(name="users")
+public class User {
     @Id
     private String id;
     @NotNull(message="Name is required")
@@ -27,8 +30,6 @@ public class AuthEntity {
     @Email(message = "Invalid email")
     @Column(unique=true)
     private String email;
-    @NotNull(message="Password is required")
-    @NotBlank(message="Password is required")
     private String password;
     @NotNull(message="Gender is required")
     @NotBlank(message="Gender is required")
@@ -48,13 +49,14 @@ public class AuthEntity {
     private String state;
     @NotNull(message="pincode is required")
     private Integer pincode;
-    @NotNull(message="Two Factor Enable is required")
     private Boolean two_factor_enable;
-    private boolean account_locked;
-    private long failed_login_attempts;
-    private long last_login_at;
-    private long last_password_change_at;
-    private long created_at;
-    private long updated_at;
-    private long created_by;
+    private Boolean account_locked;
+    private Long failed_login_attempts;
+    private Long last_login_at;
+    private Long last_password_change_at;
+    @CreationTimestamp
+    private Long created_at;
+    @UpdateTimestamp
+    private Long updated_at;
+    private Long created_by;
 }

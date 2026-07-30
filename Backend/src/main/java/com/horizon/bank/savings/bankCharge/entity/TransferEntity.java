@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "BankChargeTransferEntity")
 @Table(name="savings_transfers")
 public class TransferEntity {
     @Id

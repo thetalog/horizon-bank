@@ -1,16 +1,20 @@
 package com.horizon.bank.auth.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
+import java.util.HashMap;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.horizon.bank.auth.entity.AuthEntity;
+import com.horizon.bank.auth.dto.CreateUserRequestDto;
+import com.horizon.bank.auth.dto.LoginRequestDto;
 import com.horizon.bank.auth.service.AuthService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -21,12 +25,20 @@ public class AuthController {
     }
 
     @PostMapping("/create-user")
-    public Object registerUser(@Valid @RequestBody AuthEntity data){
-        return service.save(data);
+    public Object registerUser(@Valid @RequestBody CreateUserRequestDto entity){
+        log.info("Creating user with email: {}", entity.getEmail());
+        service.createUser(entity);
+        return "User created successfully";
     }
-
-    @DeleteMapping("/delete-user")
-    public Object deleteUser(@Valid @RequestBody AuthEntity data){
-        return service.delete(data.getId());        
+    @PostMapping("/login")
+    public HashMap<String, String> loginUser(@RequestBody LoginRequestDto entity) {
+        String email = entity.getEmail();
+        String password = entity.getPassword();
+        String jwt = service.login(email, password);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("email", email);
+        response.put("jwt", jwt);
+        return response;
     }
+    
 }

@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "TransferModuleTransferEntity")
 @Table(name = "transfers")
 public class TransferEntity {
 
