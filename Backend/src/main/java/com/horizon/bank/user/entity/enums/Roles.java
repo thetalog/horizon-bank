@@ -1,4 +1,4 @@
-package com.horizon.bank.common.enums;
+package com.horizon.bank.user.entity.enums;
 
 public enum Roles {
     USER,

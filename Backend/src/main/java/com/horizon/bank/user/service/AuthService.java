@@ -1,5 +1,6 @@
 package com.horizon.bank.user.service;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.horizon.bank.user.dto.CreateUserRequestDto;
 import com.horizon.bank.user.entity.User;
 import com.horizon.bank.user.repository.UserRepository;
-
 @Service
 public class AuthService {
 
@@ -34,12 +34,12 @@ public class AuthService {
         return userRepository.save(newUser);
     }
 
-    public String login(String email, String password) {
+    public HashMap<String, String> login(String email, String password) {
         User user = userRepository.findByEmail(email);
         if (user == null || !user.getPassword().equals(password)) {
             throw new RuntimeException("Invalid email or password");
         }
-        return jwtService.generateToken(email);
-        
+        HashMap<String, String> tokens = jwtService.generateToken(email);
+        return tokens;
     }
 }

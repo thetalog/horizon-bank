@@ -21,9 +21,9 @@ public class Accounts {
     private AccountType account_type;
     private String ifsc_code;
     private Long balance;
-
+    private String branch_name;
     private Long created_by;
-
+    private Boolean is_active;
     @CreationTimestamp
     private Long created_at;
     @UpdateTimestamp

@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "upi_payments")
-public class UpiPaymentEntity {
+public class UpiEntity {
 
     @Id
     @NotBlank(message = "id is required")

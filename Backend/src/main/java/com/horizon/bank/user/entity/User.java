@@ -7,7 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.horizon.bank.accounts.entity.Accounts;
-import com.horizon.bank.common.enums.Roles;
+import com.horizon.bank.user.entity.enums.Roles;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -47,10 +47,8 @@ public class User {
     @JsonAlias("phone_number")
     @Column(name = "phone_number", unique=true)
     private String phone_number;
-    @NotNull(message="Address Line is required")
-
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="address_id")
+    @OneToOne(cascade = CascadeType.ALL, optional = true)
+    @JoinColumn(name = "address_id", nullable = true)
     private Address address;
 
     private Boolean two_factor_enable;

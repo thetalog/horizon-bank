@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.horizon.bank.common.component.ResponseStructure;
 import com.horizon.bank.user.dto.CreateUserRequestDto;
 import com.horizon.bank.user.dto.LoginRequestDto;
 import com.horizon.bank.user.service.AuthService;
@@ -19,9 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService service;
+    private final ResponseStructure response;
 
-    public AuthController(AuthService service){
+    public AuthController(AuthService service, ResponseStructure response){
         this.service = service;
+        this.response = response;
     }
 
     @PostMapping("/create-user")
@@ -31,14 +34,20 @@ public class AuthController {
         return "User created successfully";
     }
     @PostMapping("/login")
-    public HashMap<String, String> loginUser(@Valid @RequestBody LoginRequestDto entity) {
-        String email = entity.getEmail();
-        String password = entity.getPassword();
-        String jwt = service.login(email, password);
-        HashMap<String, String> response = new HashMap<>();
-        response.put("email", email);
-        response.put("jwt", jwt);
-        return response;
+    public HashMap<String, Object> loginUser(@Valid @RequestBody LoginRequestDto entity) {
+        try {
+            String email = entity.getEmail();
+            String password = entity.getPassword();
+            HashMap<String, String> tokens = service.login(email, password);
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("email", email);
+            data.put("tokens", tokens);
+            response.setResponse(200, "Login successful",  data );
+            return response.send();
+            
+        } catch (Exception e) {
+            response.setResponse(403, "Invalid credentials!", null);
+            return response.send();
+        }
     }
-    
 }
