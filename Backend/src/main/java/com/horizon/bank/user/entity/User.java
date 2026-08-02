@@ -6,7 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.horizon.bank.accounts.entity.Accounts;
+import com.horizon.bank.accounts.entity.Account;
 import com.horizon.bank.user.entity.enums.Roles;
 
 import jakarta.persistence.CascadeType;
@@ -56,16 +56,15 @@ public class User {
     private Long failed_login_attempts;
     private Long last_login_at;
     private Long last_password_change_at;
-
+    private Boolean is_active;
     private List<Roles> role;
     private String profile_picture;
-    @OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name="accounts_id")
-    private List<Accounts> bank_accounts;
+    @OneToMany(mappedBy="user")
+    private List<Account> accounts;
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="kyc_id")
     private KYC kyc;
-    private Long created_by;
+    private String created_by;
     @CreationTimestamp
     private Long created_at;
     @UpdateTimestamp

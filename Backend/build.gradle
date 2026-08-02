@@ -39,7 +39,8 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.7")
 	implementation("org.springframework.security:spring-security-core:7.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-
+compileOnly("javax.servlet:javax.servlet-api:4.0.1")
+compileOnly("javax.servlet:servlet-api:3.0-alpha-1")
 }
 
 tasks.named('test') {

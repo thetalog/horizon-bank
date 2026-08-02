@@ -15,4 +15,5 @@ public class CreateUserRequestDto {
     private String city;
     private String state;
     private Integer pincode;
+    private String created_by;
 }

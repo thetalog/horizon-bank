@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.horizon.bank.common.component.ResponseStructure;
 import com.horizon.bank.user.dto.CreateUserRequestDto;
 import com.horizon.bank.user.dto.LoginRequestDto;
-import com.horizon.bank.user.service.AuthService;
+import com.horizon.bank.user.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -18,20 +18,35 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
-    private final AuthService service;
+public class UserController {
+    private final UserService service;
     private final ResponseStructure response;
 
-    public AuthController(AuthService service, ResponseStructure response){
+    public UserController(UserService service, ResponseStructure response){
         this.service = service;
         this.response = response;
     }
 
     @PostMapping("/create-user")
-    public Object registerUser(@Valid @RequestBody CreateUserRequestDto entity){
-        log.info("Creating user with email: {}", entity.getEmail());
-        service.createUser(entity);
-        return "User created successfully";
+    public Object registerUser(@Valid @RequestBody CreateUserRequestDto entity) throws Exception {
+        String createdBy = entity.getCreated_by();
+        if (createdBy != null && !createdBy.isBlank()) {
+            Boolean isCreatorIdValidAndActive = service.isCreatorIdValidAndActive(createdBy);
+            if (isCreatorIdValidAndActive == null || !isCreatorIdValidAndActive) {
+                response.setResponse(403, "Error Creating User", null);
+                return response.send();
+            }
+        }
+
+        Object result = service.createUser(entity);
+        if(result instanceof String) {
+            response.setResponse(403, (String) result, null);
+            return response.send();
+        }
+        HashMap<String, Object> data = new HashMap<>();
+        // data.put("data", entity);
+        response.setResponse(200, "User created successfull1y", data);
+        return response.send();
     }
     @PostMapping("/login")
     public HashMap<String, Object> loginUser(@Valid @RequestBody LoginRequestDto entity) {
