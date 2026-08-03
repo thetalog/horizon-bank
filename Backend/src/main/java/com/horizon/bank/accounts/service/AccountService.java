@@ -23,27 +23,27 @@ public class AccountService {
         this.userService = userService;
         this.globalExceptionHandler = globalExceptionHandler;
     }
-    public User getUserByAccountId(String accountId){
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+    public User getUserByAccountId(String accountNumber){
+        AccountEntity account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Account not found"));
         return account.getUser();
     }
-    public BigDecimal getAccountBalance(String accountId) {
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+    public BigDecimal getAccountBalance(String accountNumber) {
+        AccountEntity account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Account not found"));
         return account.getBalance();
     }
-    public Boolean isAccountActive(String accountId) {
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+    public Boolean isAccountActive(String accountNumber) {
+        AccountEntity account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Account not found"));
         return account.getIsActive();
     }
-    public AccountEntity getAccountDetails(String accountId) {
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+    public AccountEntity getAccountDetails(String accountNumber) {
+        AccountEntity account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Account not found"));
         return account;
     }
     public List<AccountEntity> getAllAccountDetails(String userId) {
         return accountRepository.findByUserId(userId);
     }
-    public void updateAccountBalance(String accountId, BigDecimal newBalance) {
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Account not found"));
+    public void updateAccountBalance(String accountNumber, BigDecimal newBalance) {
+        AccountEntity account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Account not found"));
         account.setBalance(newBalance);
         accountRepository.save(account);
     }

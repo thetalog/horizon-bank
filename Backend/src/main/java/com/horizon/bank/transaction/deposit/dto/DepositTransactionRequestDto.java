@@ -10,11 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DepositTransactionRequestDto {
-    private String accountId;
-    private BigDecimal amount;
-    private String currency;
-    private DepositTransactionType depositType;
-    private String branchCode;
-    private String depositedBy;
-
+    public String payeeAccountNumber;
+    public BigDecimal amount;
+    public String currency;
+    public DepositTransactionType depositType;
+    public String branchCode;
+    public String employeeId;
+    public String payerAccountNumber;
 }
