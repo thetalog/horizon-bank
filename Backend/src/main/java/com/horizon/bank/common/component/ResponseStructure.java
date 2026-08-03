@@ -10,10 +10,10 @@ public class ResponseStructure {
     public int statusCode;
     public String message;
     public Timestamp timestamp;
-    public HashMap<String, Object> data;
+    public Object data;
     public HashMap<String, Object> response;
 
-    public void setResponse(int statusCode, String message, HashMap<String, Object> data) {
+    public void setResponse(int statusCode, String message, Object data) {
         this.statusCode = statusCode;
         this.message = message;
         this.timestamp = new Timestamp(System.currentTimeMillis());

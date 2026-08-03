@@ -1,6 +1,6 @@
 package com.horizon.bank.user.entity.enums;
 
-public enum Roles {
+public enum UserRoles {
     USER,
     ADMIN,
     MANAGER,

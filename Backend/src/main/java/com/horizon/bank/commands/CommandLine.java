@@ -21,7 +21,7 @@ public class CommandLine {
                 user.setEmail("admin@bank.com");
                 user.setPassword("123456");
                 user.setGender("Male");
-                user.setPhone_number("9876543210");
+                user.setPhoneNumber("9876543210");
                 
                 repo.save(user);
             }

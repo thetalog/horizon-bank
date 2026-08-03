@@ -29,23 +29,13 @@ public class UserController {
 
     @PostMapping("/create-user")
     public Object registerUser(@Valid @RequestBody CreateUserRequestDto entity) throws Exception {
-        String createdBy = entity.getCreated_by();
-        if (createdBy != null && !createdBy.isBlank()) {
-            Boolean isCreatorIdValidAndActive = service.isCreatorIdValidAndActive(createdBy);
-            if (isCreatorIdValidAndActive == null || !isCreatorIdValidAndActive) {
-                response.setResponse(403, "Error Creating User", null);
-                return response.send();
-            }
-        }
-
         Object result = service.createUser(entity);
         if(result instanceof String) {
             response.setResponse(403, (String) result, null);
             return response.send();
         }
         HashMap<String, Object> data = new HashMap<>();
-        // data.put("data", entity);
-        response.setResponse(200, "User created successfull1y", data);
+        response.setResponse(200, "User created successfully", data);
         return response.send();
     }
     @PostMapping("/login")

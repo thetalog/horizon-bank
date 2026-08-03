@@ -22,7 +22,6 @@ import lombok.Setter;
 public class DepositEntity {
 
     @Id
-    @NotBlank(message = "id is required")
     private String id;
 
     // Customer Account

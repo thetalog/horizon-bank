@@ -11,7 +11,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.horizon.bank.transaction.filter.TransactionFilter;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -32,9 +31,9 @@ public class SecurityConfig {
         .addFilterBefore(transactionFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/create-user", "/auth/login", "/error").permitAll()
-                        .anyRequest().authenticated())
+                // .authorizeHttpRequests(auth -> auth
+                //         .requestMatchers("/auth/create-user", "/auth/login", "/error").permitAll()
+                //         .anyRequest().authenticated())
                 .httpBasic(basic -> basic.disable())
                 .formLogin(form -> form.disable())
                 .build();

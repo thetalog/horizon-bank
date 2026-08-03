@@ -1,11 +1,19 @@
 package com.horizon.bank.transaction.atmWithdrawal.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.horizon.bank.accounts.entity.AccountEntity;
 import com.horizon.bank.transaction.atmWithdrawal.enums.WithdrawalTransactionType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,38 +21,43 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="savings_withdrawals")
+@Table(name = "savings_withdrawals")
 public class WithdrawalEntity {
+
     @Id
     private String id;
-    @NotNull(message="account_id is required")
-    @NotBlank(message="account_id is required")
-    private String account_id;
-    @NotNull(message="amount is required")
-    @NotBlank(message="amount is required")
+
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    @NotNull(message = "Account is required")
+    private AccountEntity account;
+
+    @NotNull(message = "Amount is required")
     private Double amount;
-    @NotNull(message="currency is required")
-    @NotBlank(message="currency is required")
+
+    @NotNull(message = "Currency is required")
     private String currency;
-    @NotNull(message="description is required")
-    @NotBlank(message="description is required")
+
     private String description;
-    @NotNull(message="status is required")
-    @NotBlank(message="status is required")
+
+    @NotNull(message = "Status is required")
     private String status;
-    @NotNull(message="withdrawal_transaction_type is required")
-    @NotBlank(message="withdrawal_transaction_type is required")
-    private Enum<WithdrawalTransactionType> withdrawal_transaction_type;
-    @NotNull(message="balance_before is required")
-    @NotBlank(message="balance_before is required")
-    private long balance_before;
-    @NotNull(message="balance_after is required")
-    @NotBlank(message="balance_after is required")
-    private long balance_after;
-    @NotNull(message="created_at is required")
-    @NotBlank(message="created_at is required")
-    private long created_at;
-    @NotNull(message="updated_at is required")
-    @NotBlank(message="updated_at is required")
-    private long updated_at;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "withdrawal_transaction_type")
+    private WithdrawalTransactionType withdrawalTransactionType;
+
+    @Column(name = "balance_before")
+    private Long balanceBefore;
+
+    @Column(name = "balance_after")
+    private Long balanceAfter;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private Long createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Long updatedAt;
 }
