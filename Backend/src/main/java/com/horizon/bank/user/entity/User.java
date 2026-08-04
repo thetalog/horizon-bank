@@ -90,7 +90,7 @@ public class User {
     @JsonManagedReference
     private List<AccountEntity> accounts;
 
-    @OneToMany(mappedBy = "approved_by")
+    @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<CardEntity> cardApprovals;
 

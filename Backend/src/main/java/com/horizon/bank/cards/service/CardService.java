@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.horizon.bank.accounts.entity.AccountEntity;
 import com.horizon.bank.accounts.service.AccountService;
 import com.horizon.bank.cards.dto.CreateCardRequestDto;
+import com.horizon.bank.cards.dto.GetCardRequestDto;
 import com.horizon.bank.cards.entity.CardEntity;
 import com.horizon.bank.cards.enums.ApprovalStatus;
 import com.horizon.bank.cards.enums.CardStatus;
@@ -33,6 +34,34 @@ public class CardService {
         this.accountService = accountService;
         this.cardRepository = cardRepository;
     }
+    public ResponseStructure getAllCardRequest(ResponseStructure responseStructure){
+        List<CardEntity> cards = cardRepository.getAllByStatus(CardStatus.PENDING);
+        if(cards.isEmpty()){
+            responseStructure.setStatusCode(200);
+            responseStructure.setMessage("No card with pending status found");
+            responseStructure.setError(false);
+            responseStructure.setData(null);
+        }
+        responseStructure.setStatusCode(200);
+        responseStructure.setMessage("Found card pending lists");
+        responseStructure.setError(false);
+        responseStructure.setData(cards);
+        return responseStructure;
+    }
+    public ResponseStructure getParticularCardRequest(ResponseStructure responseStructure, GetCardRequestDto requestDto){
+        CardEntity cards = cardRepository.getByStatusAndUserId(CardStatus.PENDING, requestDto.getUserId());
+        if(cards == null){
+            responseStructure.setStatusCode(200);
+            responseStructure.setMessage("No card with pending status found");
+            responseStructure.setError(false);
+            responseStructure.setData(null);
+        }
+        responseStructure.setStatusCode(200);
+        responseStructure.setMessage("Found card of the user");
+        responseStructure.setError(false);
+        responseStructure.setData(cards);
+        return responseStructure;
+    }
     public String generateCardNumber() {
         String cardNumber;
         do {
@@ -40,6 +69,7 @@ public class CardService {
         } while (cardNumber.length() < 12 || cardRepository.findByCardNumber(cardNumber).isPresent());
         return cardNumber;
     }
+
     public ResponseStructure createCardRequest(CreateCardRequestDto requestDto, ResponseStructure responseStructure){
         try{
             //user active
@@ -69,7 +99,7 @@ public class CardService {
             cardEntity.setExpiryMonth(ThreadLocalRandom.current().nextInt(0, 11));
             cardEntity.setExpiryYear(ThreadLocalRandom.current().nextInt(new Date().getYear(), new Date().getYear() + 20));
             cardEntity.setPin("");
-            cardEntity.setStatus(CardStatus.BLOCKED);
+            cardEntity.setStatus(CardStatus.PENDING);
             cardRepository.save(cardEntity);
             responseStructure.setData(cardEntity);
             responseStructure.setError(false);
