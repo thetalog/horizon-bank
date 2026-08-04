@@ -3,6 +3,7 @@ package com.horizon.bank.user.entity;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.horizon.bank.cards.entity.CardEntity;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -88,6 +89,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<AccountEntity> accounts;
+
+    @OneToMany(mappedBy = "approved_by")
+    @JsonManagedReference
+    private List<CardEntity> cardApprovals;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "kyc_id")

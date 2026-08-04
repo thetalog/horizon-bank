@@ -29,36 +29,19 @@ public class DepositController {
     public HashMap<String, Object> createDepositTransactionNonCash(@RequestBody DepositTransactionRequestDto requestDto) {
         try{
             if(requestDto.getDepositType() == DepositTransactionType.CASH){
-                responseStructure.setResponse(403, "Support Non Cash Deposit only", null);
+                responseStructure.setResponse(403, "Support Non Cash Deposit only",true, null);
                 return responseStructure.send();
             }
-           DepositEntity depositTransactionResponse = depositService.createDepositTransactionNonCash(requestDto);
-            responseStructure.setResponse(200, "Deposit transaction created successfully", depositTransactionResponse);
+           depositService.createDepositTransactionNonCash(requestDto, responseStructure);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create deposit transaction: " + e.getMessage());
         }
         return responseStructure.send();
-    }
+        }
 
     @PutMapping("/reverse-deposit-transaction")
     public HashMap<String, Object> reverseDepositTransaction(@RequestBody ReverseDepositTransactionDto requestDto) {
-        try{
-            Object reverseDepositTransactionResponse = depositService.reverseDepositTransaction(requestDto);
-            responseStructure.setResponse(200, "Deposit transaction reversed successfully", reverseDepositTransactionResponse);
-        } catch (Exception e) {
-            responseStructure.setResponse(200, "Deposit transaction reversed failed", e.getMessage());
-        }
+        depositService.reverseDepositTransaction(requestDto, responseStructure);
         return responseStructure.send();
     }
-
-//    @PutMapping("/reverse-deposit-transaction")
-//    public HashMap<String, Object> refundDepositTransaction(@RequestBody ReverseDepositTransactionDto requestDto) {
-//        try{
-//            DepositEntity reverseDepositTransactionResponse = depositService.reverseDepositTransaction(requestDto);
-//            responseStructure.setResponse(200, "Deposit transaction reversed successfully", reverseDepositTransactionResponse);
-//        } catch (Exception e) {
-//            responseStructure.setResponse(200, "Deposit transaction reversed failed", e.getMessage());
-//        }
-//        return responseStructure.send();
-//    }
 }

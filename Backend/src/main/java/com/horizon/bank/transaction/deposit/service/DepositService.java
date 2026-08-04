@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.horizon.bank.accounts.entity.AccountEntity;
+import com.horizon.bank.common.component.ResponseStructure;
 import com.horizon.bank.transaction.deposit.enums.DepositTransactionType;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class DepositService {
         this.accountService = accountService;
     }
     
-    public DepositEntity createDepositTransactionNonCash(DepositTransactionRequestDto requestDto) {
+    public ResponseStructure createDepositTransactionNonCash(DepositTransactionRequestDto requestDto, ResponseStructure responseStructure) {
         try{
             if(requestDto.getPayerAccountNumber().isBlank()) {
                 throw new RuntimeException("Deductor account id not mentioned");
@@ -57,19 +58,23 @@ public class DepositService {
             accountService.updateAccountBalance(payerAccountDetails.getAccountNumber(), payerAccountDetails.getBalance().subtract(requestDto.getAmount()));
             accountService.updateAccountBalance(payeeAccountDetails.getAccountNumber(), payeeAccountDetails.getBalance().add(requestDto.getAmount()));
             depositRepository.save(depositEntity);
-            return depositEntity;
+            responseStructure.setData(depositEntity);
+            responseStructure.setMessage("Deposit successful");
+            responseStructure.setError(false);
         } catch (Exception e) {
-            log.error("Failed to create deposit transaction: " + e.getMessage(), e);
-            throw new RuntimeException("Failed to create deposit transaction: " + e.getMessage());
+            responseStructure.setData(null);
+            responseStructure.setMessage("Failed to create deposit transaction: " + e.getMessage());
+            responseStructure.setError(true);
         }
+        return responseStructure;
     }
 
-    public Object reverseDepositTransaction(ReverseDepositTransactionDto requestDto){
+    public ResponseStructure reverseDepositTransaction(ReverseDepositTransactionDto requestDto, ResponseStructure responseStructure){
         DepositEntity originalDepositEntity = new DepositEntity();
 
         try{
             //check if reverse transaction with same transaction id happen before
-            List<DepositEntity> listOfAlreadyRefundedTranasaction = depositRepository.getAllByStatusAndReferenceTransactionForRevert(TransactionStatus.REFUNDED, requestDto.getOriginalTransactionReferenceNumber());
+            List<DepositEntity> listOfAlreadyRefundedTranasaction = depositRepository.getAllByStatusAndOriginalTransactionReferenceNumber(TransactionStatus.REFUNDED, requestDto.getOriginalTransactionReferenceNumber());
             if(!listOfAlreadyRefundedTranasaction.isEmpty()){
                 throw new RuntimeException("Transaction already refunded.");
             }
@@ -105,9 +110,14 @@ public class DepositService {
                 originalDepositEntity.setPayerBalanceAfter(payerAccountDetails.getBalance().add(originalTransaction.getAmount()));
                 depositRepository.save(originalDepositEntity);
             }
-            return originalDepositEntity;
+            responseStructure.setError(false);
+            responseStructure.setMessage("Transaction refund successfully");
+            responseStructure.setData(originalDepositEntity);
         } catch (Exception e) {
-            return "Failed to create deposit transaction: ";
+            responseStructure.setError(true);
+            responseStructure.setMessage("Transaction refund failed");
+            responseStructure.setData(e.getMessage());
         }
+        return responseStructure;
     }
 }

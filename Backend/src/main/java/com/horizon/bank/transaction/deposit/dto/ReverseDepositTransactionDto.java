@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class ReverseDepositTransactionDto {
-    private String accountNumber;
     private String branchCode;
     private String employeeId;
     private String originalTransactionReferenceNumber;

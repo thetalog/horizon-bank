@@ -7,6 +7,6 @@ import com.horizon.bank.transaction.deposit.entity.DepositEntity;
 import java.util.List;
 
 public interface DepositRepository  extends JpaRepository<DepositEntity, String> {
-    List<DepositEntity> getAllByStatusAndReferenceTransactionForRevert(TransactionStatus transactionStatus, String referenceTransactionForRevert);
+    List<DepositEntity> getAllByStatusAndOriginalTransactionReferenceNumber(TransactionStatus transactionStatus, String originalTransactionReferenceNumber);
     DepositEntity getByReferenceNumber(String referenceNumber);
 }

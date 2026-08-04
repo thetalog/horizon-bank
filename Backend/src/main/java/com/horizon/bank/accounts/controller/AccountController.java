@@ -26,14 +26,14 @@ public class AccountController {
     @GetMapping("/get-account-details")
     public HashMap<String, Object> getAccountDetails(@RequestBody GetAccountDetailsRequestDto request){
         AccountEntity accountDetailsResponse = accountService.getAccountDetails(request.getAccountNumber());
-        response.setResponse(200, "Account details fetched.", accountDetailsResponse);
+        response.setResponse(200, "Account details fetched.", false, accountDetailsResponse);
         return response.send();
     }
 
     @GetMapping("/get-all-account-details")
     public HashMap<String, Object> getAccountDetails(@RequestBody GetAllAccountDetailsRequestDto request){
         List<AccountEntity> accountDetailsResponse = accountService.getAllAccountDetails(request.getUserId());
-        response.setResponse(200, "Account details fetched.", accountDetailsResponse);
+        response.setResponse(200, "Account details fetched.",false, accountDetailsResponse);
         return response.send();
     }
 
@@ -42,7 +42,7 @@ public class AccountController {
     public HashMap<String, Object> createAccount(@RequestBody CreateAccountRequestDto request) {
         String accountNumber = accountService.generateAccountNumber();
         HashMap<String, Object> accountResponse = accountService.createAccount(accountNumber, request);
-        response.setResponse(200, "Account created successfully", accountResponse);
+        response.setResponse(200, "Account created successfully",false, accountResponse);
         return response.send();
     }
 }

@@ -31,11 +31,11 @@ public class UserController {
     public Object registerUser(@Valid @RequestBody CreateUserRequestDto entity) throws Exception {
         Object result = service.createUser(entity);
         if(result instanceof String) {
-            response.setResponse(403, (String) result, null);
+            response.setResponse(403, (String) result, true, null);
             return response.send();
         }
         HashMap<String, Object> data = new HashMap<>();
-        response.setResponse(200, "User created successfully", data);
+        response.setResponse(200, "User created successfully",false, data);
         return response.send();
     }
     @PostMapping("/login")
@@ -47,11 +47,11 @@ public class UserController {
             HashMap<String, Object> data = new HashMap<>();
             data.put("email", email);
             data.put("tokens", tokens);
-            response.setResponse(200, "Login successful",  data );
+            response.setResponse(200, "Login successful", false,  data );
             return response.send();
             
         } catch (Exception e) {
-            response.setResponse(403, "Invalid credentials!", null);
+            response.setResponse(403, "Invalid credentials!",true,  null);
             return response.send();
         }
     }
