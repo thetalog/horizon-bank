@@ -77,6 +77,7 @@ public class AccountService {
             account.setBranchName(request.getBranchName() != null ? request.getBranchName() : request.getBranchCode());
             account.setEmployeeId(request.getEmployeeId());
             account.setUser(user);
+            account.setIsActive(false);
             accountRepository.save(account);
             HashMap<String, Object> response = new HashMap<>();
             response.put("accountNumber", account.getAccountNumber());

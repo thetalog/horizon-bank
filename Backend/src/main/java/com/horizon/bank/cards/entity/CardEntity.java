@@ -27,6 +27,7 @@ public class CardEntity {
     @JoinColumn(name = "account_number")
     private AccountEntity account;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "approval_status")
     private ApprovalStatus approvalStatus;
 
