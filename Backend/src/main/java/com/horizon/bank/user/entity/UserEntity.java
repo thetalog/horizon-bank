@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.horizon.bank.cards.entity.CardEntity;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,27 +12,17 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.horizon.bank.accounts.entity.AccountEntity;
 import com.horizon.bank.user.entity.enums.UserRoles;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import com.horizon.bank.user.entity.Kyc;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
 
     @Id
     private String id;
@@ -80,7 +71,8 @@ public class User {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private List<UserRoles> roles;
 
     @Column(name = "profile_picture")

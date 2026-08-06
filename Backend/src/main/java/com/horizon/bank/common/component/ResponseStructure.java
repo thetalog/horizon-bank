@@ -16,7 +16,6 @@ public class ResponseStructure {
     public Boolean error;
     public Timestamp timestamp;
     public Object data;
-    public HashMap<String, Object> response;
 
     public void setResponse(int statusCode, String message, Boolean error, Object data) {
         this.statusCode = statusCode;
@@ -24,14 +23,5 @@ public class ResponseStructure {
         this.error = error;
         this.timestamp = new Timestamp(System.currentTimeMillis());
         this.data = data;
-    }
-    public HashMap<String, Object> send() {
-        response = new HashMap<>();
-        response.put("statusCode", statusCode);
-        response.put("message", message);
-        response.put("error", error);
-        response.put("timestamp", timestamp);
-        response.put("data", data);
-        return response;
     }
 }

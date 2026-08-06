@@ -11,7 +11,7 @@ import com.horizon.bank.accounts.entity.AccountEntity;
 import com.horizon.bank.accounts.entity.enums.AccountType;
 import com.horizon.bank.accounts.repository.AccountRepository;
 import com.horizon.bank.user.controller.GlobalExceptionHandler;
-import com.horizon.bank.user.entity.User;
+import com.horizon.bank.user.entity.UserEntity;
 import com.horizon.bank.user.service.UserService;
 @Service
 public class AccountService {
@@ -23,7 +23,7 @@ public class AccountService {
         this.userService = userService;
         this.globalExceptionHandler = globalExceptionHandler;
     }
-    public User getUserByAccountId(String accountNumber){
+    public UserEntity getUserByAccountId(String accountNumber){
         AccountEntity account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException("Account not found"));
         return account.getUser();
     }
@@ -56,7 +56,7 @@ public class AccountService {
     }
     public HashMap<String, Object> createAccount(String accountNumber, CreateAccountRequestDto request) {
         try{
-            User user = userService.getUserById(request.getUserId());
+            UserEntity userEntity = userService.getUserById(request.getUserId());
             AccountType accountType = request.getAccountType();
             AccountEntity account = new AccountEntity();
             if (accountType == null) {
@@ -76,7 +76,7 @@ public class AccountService {
             account.setBalance(request.getBalance());
             account.setBranchName(request.getBranchName() != null ? request.getBranchName() : request.getBranchCode());
             account.setEmployeeId(request.getEmployeeId());
-            account.setUser(user);
+            account.setUser(userEntity);
             account.setIsActive(false);
             accountRepository.save(account);
             HashMap<String, Object> response = new HashMap<>();

@@ -1,6 +1,5 @@
 package com.horizon.bank.cards.service;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 import com.horizon.bank.accounts.entity.AccountEntity;
@@ -9,14 +8,12 @@ import com.horizon.bank.cards.dto.*;
 import com.horizon.bank.cards.entity.CardEntity;
 import com.horizon.bank.cards.enums.ApprovalStatus;
 import com.horizon.bank.cards.enums.CardStatus;
-import com.horizon.bank.cards.enums.CardType;
 import com.horizon.bank.cards.repository.CardRepository;
 import com.horizon.bank.common.component.ResponseStructure;
 import com.horizon.bank.user.entity.enums.UserRoles;
 import org.springframework.stereotype.Service;
 
-import com.horizon.bank.user.controller.GlobalExceptionHandler;
-import com.horizon.bank.user.entity.User;
+import com.horizon.bank.user.entity.UserEntity;
 import com.horizon.bank.user.service.UserService;
 import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.net.ntp.NTPUDPClient;
@@ -73,6 +70,19 @@ public class CardService {
         responseStructure.setData(cards);
         return responseStructure;
     }
+    public ResponseStructure getCardDetails(GetCardDetailsDto requestDto, ResponseStructure responseStructure){
+        CardEntity card = cardRepository.getByCardNumber(requestDto.getCardNumber());
+        if(card == null){
+            responseStructure.setError(true);
+            responseStructure.setStatusCode(404);
+            responseStructure.setMessage("Card not found!");
+        }
+        responseStructure.setError(false);
+        responseStructure.setStatusCode(200);
+        responseStructure.setMessage("Card found!");
+        responseStructure.setData(card);
+        return responseStructure;
+    }
     public ResponseStructure getParticularCardRequest(GetCardPendingRequestDto requestDto, ResponseStructure responseStructure){
         CardEntity cards = cardRepository.getByStatusAndUserId(CardStatus.PENDING, requestDto.getUserId());
         if(cards == null){
@@ -96,7 +106,7 @@ public class CardService {
     }
     public ResponseStructure approveCardRequest(ApproveCardRequestDto requestDto, ResponseStructure responseStructure){
         // Check Employee has admin role
-        User employee = userService.getUserById(requestDto.getEmployeeId());
+        UserEntity employee = userService.getUserById(requestDto.getEmployeeId());
         if(!employee.getRoles().contains(UserRoles.ADMIN)){
             responseStructure.setMessage("Employee is not admin");
             responseStructure.setError(true);
@@ -110,8 +120,8 @@ public class CardService {
             responseStructure.setError(true);
         }
         //Check User Active
-        User user = userService.getUserById(card.get().getAccount().getUser().getId());
-        if(!Boolean.TRUE.equals(user.getIsActive())){
+        UserEntity userEntity = userService.getUserById(card.get().getAccount().getUser().getId());
+        if(!Boolean.TRUE.equals(userEntity.getIsActive())){
             responseStructure.setMessage("User is not active");
             responseStructure.setError(true);
         }
@@ -128,11 +138,11 @@ public class CardService {
     public ResponseStructure createCardRequest(CreateCardRequestDto requestDto, ResponseStructure responseStructure){
         try{
             //user active
-            User user = userService.getUserById(requestDto.getUserId());
+            UserEntity userEntity = userService.getUserById(requestDto.getUserId());
             //account active
             AccountEntity account = accountService.getAccountDetails(requestDto.getAccountNumber());
             //account and user should match
-            if(user.getId().equals(account.getUser().getId())){
+            if(userEntity.getId().equals(account.getUser().getId())){
                 responseStructure.setError(true);
                 responseStructure.setMessage("User and Account does not match");
                 responseStructure.setData(null);
@@ -143,7 +153,7 @@ public class CardService {
             cardEntity.setId(UUID.randomUUID().toString());
             cardEntity.setAccount(account);
             cardEntity.setApprovalStatus(ApprovalStatus.PENDING);
-            cardEntity.setCardHolderName(user.getName());
+            cardEntity.setCardHolderName(userEntity.getName());
             cardEntity.setCardNetwork(requestDto.getCardNetwork());
             cardEntity.setCardNumber(this.generateCardNumber());
             cardEntity.setCvv(ThreadLocalRandom.current().nextInt(100, 999));
@@ -171,7 +181,7 @@ public class CardService {
     }
     public ResponseStructure toggleCardStatus(ToggleCardStatusDto requestDto, ResponseStructure responseStructure){
         // Check Employee has admin role
-        User employee = userService.getUserById(requestDto.getEmployeeId());
+        UserEntity employee = userService.getUserById(requestDto.getEmployeeId());
         if(!employee.getRoles().contains(UserRoles.ADMIN)){
             responseStructure.setMessage("Employee is not admin");
             responseStructure.setError(true);
@@ -194,6 +204,32 @@ public class CardService {
         responseStructure.setError(false);
         responseStructure.setMessage("Card toggled to: " + toggleStatus);
         responseStructure.setStatusCode(201);
+        return responseStructure;
+    }
+    public ResponseStructure updateCardPin(UpdateAtmPinDto requestDto, ResponseStructure responseStructure){
+
+        //Get Card Request
+        Optional<CardEntity> card = cardRepository.findByCardNumber(requestDto.getCardNumber());
+        if(card.isEmpty()){
+            responseStructure.setStatusCode(403);
+            responseStructure.setError(true);
+            responseStructure.setMessage("card not found");
+            responseStructure.setData(null);
+            return responseStructure;
+        }
+        if(requestDto.getPin().length() > 6){
+            responseStructure.setStatusCode(403);
+            responseStructure.setError(true);
+            responseStructure.setMessage("Pin needs to be valid");
+            responseStructure.setData(null);
+            return responseStructure;
+        }
+        card.get().setPin(requestDto.getPin());
+        cardRepository.save(card.get());
+        responseStructure.setStatusCode(201);
+        responseStructure.setError(false);
+        responseStructure.setMessage("pin update  successful");
+        responseStructure.setData(null);
         return responseStructure;
     }
 }

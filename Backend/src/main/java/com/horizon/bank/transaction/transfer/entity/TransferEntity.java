@@ -26,12 +26,16 @@ public class TransferEntity {
     private String id;
 
     // Sender Account
-    @NotBlank(message = "from_account_id is required")
-    private String fromAccountId;
+    @NotBlank(message = "payer_account_id is required")
+    private String payerAccountId;
 
     // Receiver Account
-    @NotBlank(message = "to_account_id is required")
-    private String toAccountId;
+    @NotBlank(message = "payee_account_id is required")
+    private String payeeAccountId;
+
+    // transaction pin
+    @NotBlank(message = "transaction_pin is required")
+    private String transactionPin;
 
     // Transfer Amount
     @NotNull(message = "amount is required")
@@ -45,7 +49,7 @@ public class TransferEntity {
     @NotNull(message = "transfer_type is required")
     private TransferType transferType;
 
-    private String description;
+    private String remarks;
 
     private String referenceNumber;
 
@@ -55,11 +59,17 @@ public class TransferEntity {
     private TransactionStatus status;
 
     // Sender Balance
-    @NotNull(message = "balance_before is required")
-    private BigDecimal balanceBefore;
+    @NotNull(message = "payee_balance_before is required")
+    private BigDecimal payeeBalanceBefore;
 
-    @NotNull(message = "balance_after is required")
-    private BigDecimal balanceAfter;
+    @NotNull(message = "payee_balance_after is required")
+    private BigDecimal payeeBalanceAfter;
+
+    @NotNull(message = "payer_balance_before is required")
+    private BigDecimal payerBalanceBefore;
+
+    @NotNull(message = "payer_balance_after is required")
+    private BigDecimal payerBalanceAfter;
 
     // Audit
     private Long createdAt;

@@ -2,15 +2,12 @@ package com.horizon.bank.transaction.atmWithdrawal.entity;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.horizon.bank.cards.entity.CardEntity;
 import com.horizon.bank.transaction.atmWithdrawal.enums.WithdrawalTransactionType;
 import com.horizon.bank.transaction.debitCardPayment.enums.TransactionStatus;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -39,6 +36,11 @@ public class AtmWithdrawalEntity {
 
     @Column(name = "atm_id")
     private String atmId;
+
+    @ManyToOne
+    @JoinColumn(name="card_id")
+    @JsonBackReference
+    private CardEntity card;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

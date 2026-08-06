@@ -26,22 +26,22 @@ public class DepositController {
     }
 
     @PostMapping("/create-deposit-transaction-non-cash")
-    public HashMap<String, Object> createDepositTransactionNonCash(@RequestBody DepositTransactionRequestDto requestDto) {
+    public ResponseStructure createDepositTransactionNonCash(@RequestBody DepositTransactionRequestDto requestDto) {
         try{
             if(requestDto.getDepositType() == DepositTransactionType.CASH){
                 responseStructure.setResponse(403, "Support Non Cash Deposit only",true, null);
-                return responseStructure.send();
+                return responseStructure;
             }
            depositService.createDepositTransactionNonCash(requestDto, responseStructure);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create deposit transaction: " + e.getMessage());
         }
-        return responseStructure.send();
+        return responseStructure;
         }
 
     @PutMapping("/reverse-deposit-transaction")
-    public HashMap<String, Object> reverseDepositTransaction(@RequestBody ReverseDepositTransactionDto requestDto) {
+    public ResponseStructure reverseDepositTransaction(@RequestBody ReverseDepositTransactionDto requestDto) {
         depositService.reverseDepositTransaction(requestDto, responseStructure);
-        return responseStructure.send();
+        return responseStructure;
     }
 }

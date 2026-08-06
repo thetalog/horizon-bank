@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.horizon.bank.accounts.entity.enums.AccountType;
-import com.horizon.bank.user.entity.User;
+import com.horizon.bank.user.entity.UserEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -43,10 +43,11 @@ public class AccountEntity {
     private String employeeId;
     @Column(name = "is_active")
     private Boolean isActive;
+
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @CreationTimestamp
     @Column(name = "created_at")

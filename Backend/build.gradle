@@ -41,6 +41,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("joda-time:joda-time:2.14.3")
     implementation("commons-net:commons-net:3.13.0")
+    implementation("org.json:json:20260719")
 }
 
 tasks.named('test') {

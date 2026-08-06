@@ -24,25 +24,34 @@ public class AccountController {
         this.response = response;
     }
     @GetMapping("/get-account-details")
-    public HashMap<String, Object> getAccountDetails(@RequestBody GetAccountDetailsRequestDto request){
+    public ResponseStructure getAccountDetails(@RequestBody GetAccountDetailsRequestDto request){
         AccountEntity accountDetailsResponse = accountService.getAccountDetails(request.getAccountNumber());
-        response.setResponse(200, "Account details fetched.", false, accountDetailsResponse);
-        return response.send();
+        response.setData(accountDetailsResponse);
+        response.setMessage("Account details fetched.");
+        response.setError(false);
+        response.setStatusCode(200);
+        return response;
     }
 
     @GetMapping("/get-all-account-details")
-    public HashMap<String, Object> getAccountDetails(@RequestBody GetAllAccountDetailsRequestDto request){
+    public ResponseStructure getAccountDetails(@RequestBody GetAllAccountDetailsRequestDto request){
         List<AccountEntity> accountDetailsResponse = accountService.getAllAccountDetails(request.getUserId());
-        response.setResponse(200, "Account details fetched.",false, accountDetailsResponse);
-        return response.send();
+        response.setData(accountDetailsResponse);
+        response.setMessage("Account details fetched.");
+        response.setError(false);
+        response.setStatusCode(200);
+        return response;
     }
 
 
     @PostMapping("/create-account")
-    public HashMap<String, Object> createAccount(@RequestBody CreateAccountRequestDto request) {
+    public ResponseStructure createAccount(@RequestBody CreateAccountRequestDto request) {
         String accountNumber = accountService.generateAccountNumber();
         HashMap<String, Object> accountResponse = accountService.createAccount(accountNumber, request);
-        response.setResponse(200, "Account created successfully",false, accountResponse);
-        return response.send();
+        response.setData(accountResponse);
+        response.setMessage("Account created successfully.");
+        response.setError(false);
+        response.setStatusCode(200);
+        return response;
     }
 }

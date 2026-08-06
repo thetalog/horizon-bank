@@ -1,9 +1,6 @@
 package com.horizon.bank.cards.controller;
 
-import com.horizon.bank.cards.dto.ApproveCardRequestDto;
-import com.horizon.bank.cards.dto.CreateCardRequestDto;
-import com.horizon.bank.cards.dto.GetCardPendingRequestDto;
-import com.horizon.bank.cards.dto.ToggleCardStatusDto;
+import com.horizon.bank.cards.dto.*;
 import com.horizon.bank.cards.service.CardService;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +34,13 @@ public class CardController {
     @PutMapping("/toggle-card-status")
     ResponseStructure toggleCardStatus(@RequestBody ToggleCardStatusDto requestDto){
         return cardService.toggleCardStatus(requestDto, responseStructure);
+    }
+    @GetMapping("/get-card-details")
+    ResponseStructure toggleCardStatus(@RequestBody GetCardDetailsDto requestDto){
+        return cardService.getCardDetails(requestDto, responseStructure);
+    }
+    @PutMapping("/update-card-pin")
+    ResponseStructure updateCardPin(@RequestBody UpdateAtmPinDto requestDto){
+        return cardService.updateCardPin(requestDto, responseStructure);
     }
 }

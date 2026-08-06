@@ -1,16 +1,20 @@
 package com.horizon.bank.cards.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.horizon.bank.accounts.entity.AccountEntity;
 import com.horizon.bank.cards.enums.ApprovalStatus;
 import com.horizon.bank.cards.enums.CardNetwork;
 import com.horizon.bank.cards.enums.CardStatus;
 import com.horizon.bank.cards.enums.CardType;
-import com.horizon.bank.user.entity.User;
+import com.horizon.bank.transaction.atmWithdrawal.entity.AtmWithdrawalEntity;
+import com.horizon.bank.user.entity.UserEntity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,7 +38,11 @@ public class CardEntity {
     @JoinColumn(name = "approved_by")
     @ManyToOne
     @JsonBackReference
-    private User user;
+    private UserEntity user;
+
+    @OneToMany(mappedBy = "card")
+    @JsonManagedReference
+    private List<AtmWithdrawalEntity> atmWithdrawal;
 
     @Column(name = "card_number", unique = true)
     private String cardNumber;

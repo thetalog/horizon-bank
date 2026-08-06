@@ -28,18 +28,18 @@ public class UserController {
     }
 
     @PostMapping("/create-user")
-    public Object registerUser(@Valid @RequestBody CreateUserRequestDto entity) throws Exception {
+    public ResponseStructure registerUser(@Valid @RequestBody CreateUserRequestDto entity) throws Exception {
         Object result = service.createUser(entity);
         if(result instanceof String) {
             response.setResponse(403, (String) result, true, null);
-            return response.send();
+            return response;
         }
         HashMap<String, Object> data = new HashMap<>();
         response.setResponse(200, "User created successfully",false, data);
-        return response.send();
+        return response;
     }
     @PostMapping("/login")
-    public HashMap<String, Object> loginUser(@Valid @RequestBody LoginRequestDto entity) {
+    public ResponseStructure loginUser(@Valid @RequestBody LoginRequestDto entity) {
         try {
             String email = entity.getEmail();
             String password = entity.getPassword();
@@ -48,11 +48,11 @@ public class UserController {
             data.put("email", email);
             data.put("tokens", tokens);
             response.setResponse(200, "Login successful", false,  data );
-            return response.send();
+            return response;
             
         } catch (Exception e) {
             response.setResponse(403, "Invalid credentials!",true,  null);
-            return response.send();
+            return response;
         }
     }
 }
