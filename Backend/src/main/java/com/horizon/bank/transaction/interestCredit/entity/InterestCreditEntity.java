@@ -1,73 +1,76 @@
 package com.horizon.bank.transaction.interestCredit.entity;
 
-import java.math.BigDecimal;
-
-import com.horizon.bank.transaction.debitCardPayment.enums.TransactionStatus;
+import com.horizon.bank.accounts.entity.AccountEntity;
 import com.horizon.bank.transaction.interestCredit.enums.InterestCreditType;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "interest_credits")
+@Table(
+    name = "interest_credits",
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "uk_account_interest_month_type",
+          columnNames = {"account_number", "credit_month", "credit_type"})
+    })
 public class InterestCreditEntity {
 
-    @Id
-    @NotBlank(message = "id is required")
-    private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
-    // Customer Account
-    @NotBlank(message = "account_id is required")
-    private String accountId;
+  /*
+   * Account receiving the interest.
+   */
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "account_number", referencedColumnName = "account_number", nullable = false)
+  private AccountEntity account;
 
-    // Interest Amount
-    @NotNull(message = "amount is required")
-    private BigDecimal amount;
+  /*
+   * Type of interest.
+   */
+  @Enumerated(EnumType.STRING)
+  @Column(name = "credit_type", nullable = false)
+  private InterestCreditType creditType;
 
-    @NotBlank(message = "currency is required")
-    private String currency;
+  /*
+   * Interest amount credited.
+   */
+  @Column(name = "interest_amount", nullable = false, precision = 15, scale = 2)
+  private BigDecimal interestAmount;
 
-    // Interest Details
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "interest_type is required")
-    private InterestCreditType interestType;
+  /*
+   * Account balance before interest was credited.
+   */
+  @Column(name = "balance_at_calculation", nullable = false, precision = 15, scale = 2)
+  private BigDecimal balanceAtCalculation;
 
-    // Annual interest rate (e.g. 3.50)
-    @NotNull(message = "interest_rate is required")
-    private BigDecimal interestRate;
+  /*
+   * Interest rate in percentage.
+   *
+   * Example:
+   * 0.50 = 0.50%
+   */
+  @Column(name = "interest_rate", nullable = false, precision = 5, scale = 2)
+  private BigDecimal interestRate;
 
-    // Interest calculation period
-    private Long periodStart;
+  /*
+   * Example:
+   * 2026-08
+   */
+  @Column(name = "credit_month", nullable = false)
+  private String creditMonth;
 
-    private Long periodEnd;
-
-    private String description;
-
-    private String referenceNumber;
-
-    // Transaction Status
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "status is required")
-    private TransactionStatus status;
-
-    // Balance
-    @NotNull(message = "balance_before is required")
-    private BigDecimal balanceBefore;
-
-    @NotNull(message = "balance_after is required")
-    private BigDecimal balanceAfter;
-
-    // Audit
-    private Long createdAt;
-
-    private Long updatedAt;
+  /*
+   * Timestamp when interest was credited.
+   */
+  @CreationTimestamp
+  @Column(name = "credited_at")
+  private Long creditedAt;
 }

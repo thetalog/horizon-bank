@@ -21,48 +21,52 @@ import lombok.Setter;
 @Table(name = "refunds")
 public class RefundEntity {
 
-    @Id
-    @NotBlank(message = "id is required")
-    private String id;
+  @Id
+  @NotBlank(message = "id is required")
+  private String id;
 
-    // Customer Account
-    @NotBlank(message = "account_id is required")
-    private String accountId;
+  // Customer Account
+  @NotBlank(message = "payer_account_number is required")
+  private String payerAccountNumber;
 
-    // Original Transaction
-    @NotBlank(message = "original_transaction_id is required")
-    private String originalTransactionId;
+  // Original Transaction
+  @NotBlank(message = "payee_account_number is required")
+  private String payee_account_number;
 
-    // Refund Amount
-    @NotNull(message = "amount is required")
-    private BigDecimal amount;
+  // Original Transaction
+  @NotBlank(message = "original_transaction_reference_number is required")
+  private String originalTransactionReferenceNumber;
 
-    @NotBlank(message = "currency is required")
-    private String currency;
+  // Refund Amount
+  @NotNull(message = "amount is required")
+  private BigDecimal amount;
 
-    // Refund Details
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "refund_type is required")
-    private RefundType refundType;
+  @NotBlank(message = "currency is required")
+  private String currency;
 
-    private String reason;
+  // Refund Details
+  @Enumerated(EnumType.STRING)
+  @NotNull(message = "refund_type is required")
+  private RefundType refundType;
 
-    private String referenceNumber;
+  private String reason;
 
-    // Transaction Status
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "status is required")
-    private TransactionStatus status;
+  private String referenceNumber;
 
-    // Balance
-    @NotNull(message = "balance_before is required")
-    private BigDecimal balanceBefore;
+  // Transaction Status
+  @Enumerated(EnumType.STRING)
+  @NotNull(message = "status is required")
+  private TransactionStatus status;
 
-    @NotNull(message = "balance_after is required")
-    private BigDecimal balanceAfter;
+  // Balance
+  @NotNull(message = "balance_before is required")
+  private BigDecimal balanceBefore;
 
-    // Audit
-    private Long createdAt;
+  @NotNull(message = "balance_after is required")
+  private BigDecimal balanceAfter;
 
-    private Long updatedAt;
+  // Audit
+  private Long createdAt;
+
+  private Long updatedAt;
 }

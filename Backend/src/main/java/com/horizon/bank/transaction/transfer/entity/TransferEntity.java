@@ -2,14 +2,12 @@ package com.horizon.bank.transaction.transfer.entity;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.horizon.bank.accounts.entity.AccountEntity;
 import com.horizon.bank.transaction.debitCardPayment.enums.TransactionStatus;
 import com.horizon.bank.transaction.transfer.enums.TransferType;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -21,58 +19,60 @@ import lombok.Setter;
 @Table(name = "transfers")
 public class TransferEntity {
 
-    @Id
-    @NotBlank(message = "id is required")
-    private String id;
+  @Id
+  @NotBlank(message = "id is required")
+  private String id;
 
-    // Sender Account
-    @NotBlank(message = "payer_account_id is required")
-    private String payerAccountId;
+  @ManyToOne
+  @JsonBackReference
+  @JoinColumn(name = "payer_account_id")
+  private AccountEntity payerAccount;
 
-    // Receiver Account
-    @NotBlank(message = "payee_account_id is required")
-    private String payeeAccountId;
+  @ManyToOne
+  @JsonBackReference
+  @JoinColumn(name = "payee_account_id")
+  private AccountEntity payeeAccount;
 
-    // transaction pin
-    @NotBlank(message = "transaction_pin is required")
-    private String transactionPin;
+  // transaction pin
+  @NotBlank(message = "transaction_pin is required")
+  private String transactionPin;
 
-    // Transfer Amount
-    @NotNull(message = "amount is required")
-    private BigDecimal amount;
+  // Transfer Amount
+  @NotNull(message = "amount is required")
+  private BigDecimal amount;
 
-    @NotBlank(message = "currency is required")
-    private String currency;
+  @NotBlank(message = "currency is required")
+  private String currency;
 
-    // Transfer Details
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "transfer_type is required")
-    private TransferType transferType;
+  // Transfer Details
+  @Enumerated(EnumType.STRING)
+  @NotNull(message = "transfer_type is required")
+  private TransferType transferType;
 
-    private String remarks;
+  private String remarks;
 
-    private String referenceNumber;
+  private String referenceNumber;
 
-    // Status
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "status is required")
-    private TransactionStatus status;
+  // Status
+  @Enumerated(EnumType.STRING)
+  @NotNull(message = "status is required")
+  private TransactionStatus status;
 
-    // Sender Balance
-    @NotNull(message = "payee_balance_before is required")
-    private BigDecimal payeeBalanceBefore;
+  // Sender Balance
+  @NotNull(message = "payee_balance_before is required")
+  private BigDecimal payeeBalanceBefore;
 
-    @NotNull(message = "payee_balance_after is required")
-    private BigDecimal payeeBalanceAfter;
+  @NotNull(message = "payee_balance_after is required")
+  private BigDecimal payeeBalanceAfter;
 
-    @NotNull(message = "payer_balance_before is required")
-    private BigDecimal payerBalanceBefore;
+  @NotNull(message = "payer_balance_before is required")
+  private BigDecimal payerBalanceBefore;
 
-    @NotNull(message = "payer_balance_after is required")
-    private BigDecimal payerBalanceAfter;
+  @NotNull(message = "payer_balance_after is required")
+  private BigDecimal payerBalanceAfter;
 
-    // Audit
-    private Long createdAt;
+  // Audit
+  private Long createdAt;
 
-    private Long updatedAt;
+  private Long updatedAt;
 }

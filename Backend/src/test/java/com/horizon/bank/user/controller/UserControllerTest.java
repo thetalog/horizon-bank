@@ -5,7 +5,6 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,12 +19,6 @@ class UserControllerTest {
     @Mock
     private UserService service;
 
-    @Mock
-    private ResponseStructure response;
-
-    @InjectMocks
-    private UserController controller;
-
     @Test
     void createUser_shouldSucceedEvenWhenCreatedByIsProvidedButInvalid() throws Exception {
         CreateUserRequestDto request = new CreateUserRequestDto();
@@ -36,16 +29,14 @@ class UserControllerTest {
         request.setPhoneNumber("9876543210");
         request.setCreatedBy("missing-user-id");
 
-        HashMap<String, Object> expectedResponse = new HashMap<>();
-        expectedResponse.put("statusCode", 200);
-        expectedResponse.put("message", "User created successfull1y");
         when(service.createUser(request)).thenReturn(new HashMap<String, Object>());
-        when(response.send()).thenReturn(expectedResponse);
 
-        Object responseBody = controller.registerUser(request);
+        ResponseStructure response = new ResponseStructure();
+        UserController controller = new UserController(service, response);
 
-        HashMap<String, Object> body = (HashMap<String, Object>) responseBody;
-        assertEquals(200, body.get("statusCode"));
-        assertEquals("User created successfull1y", body.get("message"));
+        ResponseStructure responseBody = controller.registerUser(request);
+
+        assertEquals(200, responseBody.getStatusCode());
+        assertEquals("User created successfully", responseBody.getMessage());
     }
 }
